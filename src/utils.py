@@ -1,14 +1,17 @@
-from collections import namedtuple
 import logging
+from collections import namedtuple
 
 import matplotlib.pyplot as plt
 import numpy as np
 
-
 # A data class to group activation functions and their derivatives
 ActivationFunction = namedtuple("ActivationFunction", ["name", "function", "derivative"])
 
-sig_func = lambda x: 1 / (1 + np.exp(-x))
+
+def sig_func(x):
+    return 1 / (1 + np.exp(-x))
+
+
 sigmoid = ActivationFunction(
     name="Sigmoid",
     function=sig_func,
@@ -28,6 +31,7 @@ ACTIVATION_FUNCTIONS = {
     "Hyperbolic Tangent": hyper_tan,
 }
 
+
 def get_logger(name):
     fmt = "%(asctime)s %(name)s %(levelname)s: %(message)s"
     date_fmt = "%H:%M:%S"
@@ -35,19 +39,21 @@ def get_logger(name):
         level=logging.INFO,
         format=fmt,
         datefmt=date_fmt,
-        filename='run.log',
+        filename='logs/run.log',
         filemode='w'
     )
     return logging.getLogger(name)
 
+
 def plot_mses(mses, name):
-    plt.title(name + " trainig")
+    plt.title(name + " training")
     plt.xlabel("Epochs")
     plt.ylabel("MSE")
 
     plt.plot(range(len(mses)), mses)
 
     plt.show()
+
 
 class ConfusionMatrix:
 
@@ -60,7 +66,10 @@ class ConfusionMatrix:
 
     def __repr__(self):
         slots = len(str(max(map(max, self.matrix))))
-        aloc = lambda x: str(x) + (" " * (slots - len(str(x))))
+        
+        def aloc(x):
+            return str(x) + (" " * (slots - len(str(x))))
+        
         result = ""
         result += "  " + " ".join(map(aloc, range(self.dimension)))
 

@@ -1,4 +1,5 @@
 _*
 .ipynb*
-*.log
+logs/
 mnist*
+.python-version

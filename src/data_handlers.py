@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-from util import get_logger
+from src.utils import get_logger
 
 
 class DataHandlerABC:
@@ -36,7 +36,9 @@ class Penguins(DataHandlerABC):
         self.data['body_mass_g'] = self.data['body_mass_g'] / 1000
         
         # Convert all values to fractions
-        func = lambda x: x / 100
+        def func(x):
+            return x / 100
+        
         self.data['flipper_length_mm'] = self.data['flipper_length_mm'].apply(func)
         self.data['bill_length_mm'] = self.data['bill_length_mm'].apply(func)
         self.data['bill_depth_mm'] = self.data['bill_depth_mm'].apply(func)
@@ -68,7 +70,7 @@ class Penguins(DataHandlerABC):
         testing = testing.sample(frac=1)
 
         # Return the feature columns and label column separately for each DataFrame, such that the return values
-        # are training_feature_columns, training_label_column, testing_feature_columns, testing_label_coloumn
+        # are training_feature_columns, training_label_column, testing_feature_columns, testing_label_column
         # Inspired by scikit-learn train_test_split function
         return (
             training.loc[:, training.columns != y_label],
@@ -94,7 +96,9 @@ class MNIST(DataHandlerABC):
     def preprocess_data(self):
         # Convert pixel values from range [0, 255] to [0, 1]
         filt = self.train_data.columns != "label"
-        func = lambda x: x / 255
+        
+        def func(x):
+            return x / 255
 
         self.train_data.loc[:, filt] = self.train_data.loc[:, filt].applymap(func)
         self.test_data.loc[:, filt] = self.test_data.loc[:, filt].applymap(func)
@@ -146,7 +150,7 @@ class Iris(DataHandlerABC):
         testing = testing.sample(frac=1)
 
         # Return the feature columns and label column separately for each DataFrame, such that the return values
-        # are training_feature_columns, training_label_column, testing_feature_columns, testing_label_coloumn
+        # are training_feature_columns, training_label_column, testing_feature_columns, testing_label_column
         # Inspired by scikit-learn train_test_split function
         return (
             training.loc[:, training.columns != y_label],
@@ -158,6 +162,5 @@ class Iris(DataHandlerABC):
 
 DATASETS = [
     "Penguins",
-    "MNIST",
     "Iris"
 ]

@@ -1,19 +1,21 @@
+import os
+
 import matplotlib.pyplot as plt
 
-from GUI import gui
-from data_handlers import Iris, MNIST, Penguins
-from model import MLP
-from util import ACTIVATION_FUNCTIONS, get_logger, plot_mses
+from src.data_handlers import MNIST, Iris, Penguins
+from src.gui import gui
+from src.model import MLP
+from src.utils import ACTIVATION_FUNCTIONS, get_logger, plot_mses
 
 
 def run(h_layers, mse, eta, dataset, activation, bias, epochs):
     handler = None
     if dataset == "Iris":
-        handler = Iris("iris.csv")
+        handler = Iris("data/iris.csv")
     elif dataset == "Penguins":
-        handler = Penguins("penguins.csv")
+        handler = Penguins("data/penguins.csv")
     elif dataset == "MNIST":
-        handler = MNIST("mnist_train.csv", "mnist_test.csv")
+        handler = MNIST("data/mnist_train.csv", "data/mnist_test.csv")
 
     model = MLP(
         *handler.partition_data(),
@@ -27,14 +29,17 @@ def run(h_layers, mse, eta, dataset, activation, bias, epochs):
 
     mses, train_acc = model.train()
     plot_mses(mses, dataset)
-    print(f"{dataset} training accuracy: {train_acc}")
+    print(f"\n{dataset} training accuracy: {train_acc}")
 
     conf_matrix, test_acc = model.test()
-    print(f"{dataset} testing accuracy: {test_acc}\nConfusion matrix:\n{conf_matrix}")
+    print(f"{dataset} testing accuracy: {test_acc}\nConfusion matrix:\n{conf_matrix}\n")
 
     return test_acc
 
+
 if __name__ == "__main__":
+    os.makedirs("./logs", exist_ok=True)
+    
     logger = get_logger(__name__)
     logger.info("Starting...")
 

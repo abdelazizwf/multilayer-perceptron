@@ -1,6 +1,6 @@
 import numpy as np
 
-from util import ConfusionMatrix, get_logger, sigmoid
+from src.utils import ConfusionMatrix, get_logger, sigmoid
 
 
 class Layer:
@@ -16,9 +16,12 @@ class Layer:
         self.bias = bias
         self.eta = eta
 
-        self.deltas = None # Hold the delta values calculated in the backward pass
-        self.inputs = None # Hold the inputs recieved in the first forward pass
-        self.nets = None # Hold the net values calculated in the first forward pass
+        # Hold the delta values calculated in the backward pass
+        self.deltas = None
+        # Hold the inputs received in the first forward pass
+        self.inputs = None
+        # Hold the net values calculated in the first forward pass
+        self.nets = None
 
     def get_outputs(self, inputs):
         # if bias is enabled, add 1 as a bias input
@@ -53,7 +56,7 @@ class Layer:
         if self.bias == 1:
             forward_deltas = np.array([self.deltas[0][:-1]])
 
-        # Return both the delta values and weights so they can be used in the previuos layer
+        # Return both the delta values and weights so they can be used in the previous layer
         return forward_deltas, self.weights
 
     def update_weights(self):
@@ -76,14 +79,26 @@ class OutputLayer(Layer):
 
 class MLP:
     
-    def __init__(self, x_train, y_train, x_test, y_test, hidden_layers, bias=1, activation=sigmoid, eta=0.4, epochs=400, mse_threshold=0.05):
+    def __init__(
+        self,
+        x_train,
+        y_train,
+        x_test,
+        y_test,
+        hidden_layers,
+        bias=1,
+        activation=sigmoid,
+        eta=0.4,
+        epochs=400,
+        mse_threshold=0.05
+    ):
         # Store training and testing data
         self.x_train, self.y_train = x_train, y_train
         self.x_test, self.y_test = x_test, y_test
 
         # The number of input nodes is the number of features (columns) in the training data
         self.num_inputs = len(x_train.columns)
-        # The number of output nodes is the number of target unique values of the training data 
+        # The number of output nodes is the number of target unique values of the training data
         self.num_outputs = len(y_train.unique())
         self.epochs = epochs
         self.mse_threshold = mse_threshold
